@@ -1,5 +1,7 @@
 services:
+  # -------------------------------------------------------------
   # 1. Python AI Microservice (FastAPI)
+  # -------------------------------------------------------------
   - type: web
     name: docmind-ai-service
     env: python
@@ -12,7 +14,9 @@ services:
       - key: PYTHON_VERSION
         value: 3.10.12
 
+  # -------------------------------------------------------------
   # 2. Java Backend (Spring Boot 3)
+  # -------------------------------------------------------------
   - type: web
     name: docmind-backend
     env: java
@@ -32,7 +36,9 @@ services:
           name: docmind-ai-service
           property: hostpath
 
+  # -------------------------------------------------------------
   # 3. React Frontend (Static Site)
+  # -------------------------------------------------------------
   - type: web
     name: docmind-frontend
     env: static
