@@ -1,8 +1,12 @@
 import axios from 'axios';
 import { ApiResponse, AuthResponse, User, DocumentItem, UserProfile, OpportunityItem, ReminderItem, DocumentBundleItem, AuditLogItem } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL
-  ? (import.meta.env.VITE_API_URL.endsWith('/api') ? import.meta.env.VITE_API_URL : `${import.meta.env.VITE_API_URL}/api`)
+let rawUrl = import.meta.env.VITE_API_URL || '';
+if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+  rawUrl = `https://${rawUrl}`;
+}
+const API_BASE_URL = rawUrl
+  ? (rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`)
   : '/api';
 
 export const api = axios.create({
