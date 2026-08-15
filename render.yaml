@@ -1,0 +1,51 @@
+services:
+  # 1. Python AI Microservice (FastAPI)
+  - type: web
+    name: docmind-ai-service
+    env: python
+    region: oregon
+    plan: free
+    rootDir: ai-service
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+
+  # 2. Java Backend (Spring Boot 3)
+  - type: web
+    name: docmind-backend
+    env: java
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: mvn clean package -DskipTests
+    startCommand: java -jar target/docmind-backend-1.0.0.jar
+    envVars:
+      - key: JAVA_VERSION
+        value: "21"
+      - key: SPRING_PROFILES_ACTIVE
+        value: h2
+      - key: AI_SERVICE_URL
+        fromService:
+          type: web
+          name: docmind-ai-service
+          property: hostpath
+
+  # 3. React Frontend (Static Site)
+  - type: web
+    name: docmind-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: docmind-backend
+          property: hostpath
