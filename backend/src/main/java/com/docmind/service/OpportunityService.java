@@ -22,7 +22,8 @@ public class OpportunityService {
     private final DocumentRepository documentRepository;
     private final RestTemplate restTemplate;
 
-    private final String liveJobsUrl = "http://localhost:8000/api/ai/live-jobs";
+    @Value("${app.ai-service.url:http://localhost:8000}")
+    private String aiServiceUrl;
 
     public OpportunityService(OpportunityRepository opportunityRepository,
                                SkillRepository skillRepository,
@@ -89,6 +90,8 @@ public class OpportunityService {
     private List<OpportunityDto> fetchLiveJobsFromAiService(String query, String location, String type, int page, int pageSize, List<String> userSkills, List<DocumentEntity> userDocs) {
         List<OpportunityDto> liveList = new ArrayList<>();
         try {
+            String baseUrl = (aiServiceUrl.startsWith("http://") || aiServiceUrl.startsWith("https://")) ? aiServiceUrl : "http://" + aiServiceUrl;
+            String liveJobsUrl = baseUrl + "/api/ai/live-jobs";
             String skillsParam = String.join(",", userSkills);
             String uri = UriComponentsBuilder.fromHttpUrl(liveJobsUrl)
                     .queryParam("query", query != null ? query : "")
