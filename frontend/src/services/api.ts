@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { ApiResponse, AuthResponse, User, DocumentItem, UserProfile, OpportunityItem, ReminderItem, DocumentBundleItem, AuditLogItem } from '../types';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL
+  ? (import.meta.env.VITE_API_URL.endsWith('/api') ? import.meta.env.VITE_API_URL : `${import.meta.env.VITE_API_URL}/api`)
+  : '/api';
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -93,7 +95,7 @@ export const documentsApi = {
 
   getDownloadUrl: (id: number): string => {
     const token = localStorage.getItem('docmind_token');
-    return `/api/documents/${id}/download?token=${token}`;
+    return `${API_BASE_URL}/documents/${id}/download?token=${token}`;
   },
 };
 
@@ -160,7 +162,7 @@ export const bundlesApi = {
 
   getDownloadUrl: (bundleId: number): string => {
     const token = localStorage.getItem('docmind_token');
-    return `/api/bundles/${bundleId}/download?token=${token}`;
+    return `${API_BASE_URL}/bundles/${bundleId}/download?token=${token}`;
   }
 };
 
