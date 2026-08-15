@@ -15,26 +15,23 @@ services:
         value: 3.10.12
 
   # -------------------------------------------------------------
-  # 2. Java Backend (Spring Boot 3)
+  # 2. Java Backend (Spring Boot 3 via Docker)
   # -------------------------------------------------------------
   - type: web
     name: docmind-backend
-    env: java
+    env: docker
     region: oregon
     plan: free
     rootDir: backend
-    buildCommand: mvn clean package -DskipTests
-    startCommand: java -jar target/docmind-backend-1.0.0.jar
+    dockerfilePath: Dockerfile
     envVars:
-      - key: JAVA_VERSION
-        value: "21"
       - key: SPRING_PROFILES_ACTIVE
         value: h2
       - key: AI_SERVICE_URL
         fromService:
           type: web
           name: docmind-ai-service
-          property: hostpath
+          property: host
 
   # -------------------------------------------------------------
   # 3. React Frontend (Static Site)
@@ -54,4 +51,4 @@ services:
         fromService:
           type: web
           name: docmind-backend
-          property: hostpath
+          property: host
